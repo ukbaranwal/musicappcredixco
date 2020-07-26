@@ -35,6 +35,16 @@ class _MusicPlaylistState extends State<MusicPlaylist> {
     });
   }
 
+  reloadList(int index, bool isMarked, PlaylistModel playlistModel) {
+    setState(() {
+      if (isMarked) {
+        playlistModelList.removeAt(index);
+      } else {
+        playlistModelList.add(playlistModel);
+      }
+    });
+  }
+
   getBookmarkList() async {
     sharedPreferences = await SharedPreferences.getInstance();
     bookmarkedTracks = sharedPreferences.getStringList('bookmarks');
@@ -43,6 +53,7 @@ class _MusicPlaylistState extends State<MusicPlaylist> {
       playlistModelList.add(PlaylistModel(
           trackDetails[0], trackDetails[1], trackDetails[2], trackDetails[3]));
     }
+
     print(playlistModelList.length);
   }
 
@@ -94,22 +105,25 @@ class _MusicPlaylistState extends State<MusicPlaylist> {
       scrollDirection: Axis.vertical,
       itemBuilder: (BuildContext context, int index) {
         ///Return Single Widget
-        return Card(
-          elevation: 1,
-          child: GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) {
-                  return MusicDetail(
-                    trackId: int.parse(playlistModelList[index].trackId),
-                    trackName: playlistModelList[index].trackName,
-                    albumName: playlistModelList[index].albumName,
-                    artistName: playlistModelList[index].artistName,
-                  );
-                }),
-              );
-            },
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) {
+                return MusicDetail(
+                  trackId: int.parse(playlistModelList[index].trackId),
+                  trackName: playlistModelList[index].trackName,
+                  albumName: playlistModelList[index].albumName,
+                  artistName: playlistModelList[index].artistName,
+                  isComingFromPlaylist: true,
+                  index: index,
+                  callback: reloadList,
+                );
+              }),
+            );
+          },
+          child: Card(
+            elevation: 1,
             child: Container(
               width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.symmetric(vertical: 12),

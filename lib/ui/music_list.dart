@@ -111,22 +111,23 @@ class _MusicListState extends State<MusicList> {
       scrollDirection: Axis.vertical,
       itemBuilder: (BuildContext context, int index) {
         ///Return Single Widget
-        return Card(
-          elevation: 1,
-          child: GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) {
-                  return MusicDetail(
-                    trackId: snapshot.data.results[index].trackId,
-                    trackName: snapshot.data.results[index].trackName,
-                    albumName: snapshot.data.results[index].albumName,
-                    artistName: snapshot.data.results[index].artistName,
-                  );
-                }),
-              );
-            },
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) {
+                return MusicDetail(
+                  trackId: snapshot.data.results[index].trackId,
+                  trackName: snapshot.data.results[index].trackName,
+                  albumName: snapshot.data.results[index].albumName,
+                  artistName: snapshot.data.results[index].artistName,
+                  isComingFromPlaylist: false,
+                );
+              }),
+            );
+          },
+          child: Card(
+            elevation: 1,
             child: Container(
               width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.symmetric(vertical: 12),

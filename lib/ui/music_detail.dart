@@ -5,6 +5,7 @@ import 'package:flutter_music_app_credixco/blocs/music_detail_track_block.dart';
 import 'package:flutter_music_app_credixco/models/music_detail_model.dart';
 import 'package:flutter_music_app_credixco/models/music_detail_track_model.dart';
 import 'package:flutter_music_app_credixco/models/music_model.dart';
+import 'package:flutter_music_app_credixco/models/playlist_model.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,8 +14,18 @@ class MusicDetail extends StatefulWidget {
   final String trackName;
   final String albumName;
   final String artistName;
+  final int index;
+  final Function callback;
+  final bool isComingFromPlaylist;
 
-  MusicDetail({this.trackId, this.trackName, this.albumName, this.artistName});
+  MusicDetail(
+      {this.trackId,
+      this.trackName,
+      this.albumName,
+      this.artistName,
+      this.index,
+      this.callback,
+      this.isComingFromPlaylist});
 
   @override
   _MusicDetailState createState() => _MusicDetailState();
@@ -234,6 +245,16 @@ class _MusicDetailState extends State<MusicDetail> {
                 GestureDetector(
                   onTap: () {
                     isBookmarked ? unBookmark() : bookmark();
+                    if (widget.isComingFromPlaylist) {
+                      widget.callback(
+                          widget.index,
+                          isBookmarked,
+                          PlaylistModel(
+                              widget.trackId.toString(),
+                              widget.trackName,
+                              widget.albumName,
+                              widget.artistName));
+                    }
                   },
                   child: Container(
                     color: Colors.black87,
